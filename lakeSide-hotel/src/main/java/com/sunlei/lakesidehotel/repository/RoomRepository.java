@@ -13,6 +13,7 @@ import java.util.UUID;
 
 
 public interface RoomRepository extends JpaRepository<Room, UUID> {
+    long deleteByRoomIdAllIgnoreCase(UUID roomId);
     @Query("select distinct r.roomType from Room r ")
     List<String> getAllRoomTypes();
 

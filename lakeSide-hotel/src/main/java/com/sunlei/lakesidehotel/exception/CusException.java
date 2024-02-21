@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.swing.text.html.parser.Entity;
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -19,11 +17,11 @@ import java.util.HashMap;
 public class CusException {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Object> handleException(Exception ex){
+    public ResponseEntity<Object> handleException(Exception ex) {
         String message = ex.getMessage();
         HashMap<String, Object> body = new HashMap<>();
         body.put("message", message);
-        body.put("cause", ex);
+        body.put("cause", ex.getCause());
         return ResponseEntity.badRequest().body(body);
     }
 }

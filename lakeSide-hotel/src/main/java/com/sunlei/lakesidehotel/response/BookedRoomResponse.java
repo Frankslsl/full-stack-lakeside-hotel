@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  *
  */
-public record BookedRoomResponse(UUID bookingsId, LocalDate checkInDate,
+public record BookedRoomResponse(UUID id, LocalDate checkInDate,
 
 
                                  LocalDate checkOutDate, String guestFullName, String guestEmail, int numOfAdult,

@@ -8,6 +8,7 @@ import com.sunlei.lakesidehotel.service.IRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -17,6 +18,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  *
@@ -54,6 +56,13 @@ public class RoomServiceImp implements IRoomService {
     public List<RoomResponse> getAllRooms() {
         List<Room> allRooms = roomRepository.findAll();
         return allRooms.stream().map(roomMapper::apply).toList();
+    }
+
+    @Override
+    @Transactional
+    public Boolean deleteRoomById(String id) {
+        UUID uuid = UUID.fromString(id);
+        return roomRepository.deleteByRoomIdAllIgnoreCase(uuid)>0;
     }
 
 

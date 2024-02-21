@@ -15,7 +15,7 @@ function RoomFilter({ allRooms, setFilteredData }: Props) {
 		const selectedRoomType = e.target.value;
 		setFilter(selectedRoomType);
 		const filteredRooms = allRooms.filter((room) =>
-			room.roomType.toLowerCase().includes(filter)
+			room.roomType.toLowerCase().includes(selectedRoomType)
 		);
 		setFilteredData(filteredRooms);
 	};
@@ -26,7 +26,6 @@ function RoomFilter({ allRooms, setFilteredData }: Props) {
 	};
 
 	const roomTypes: string[] = [
-		"",
 		...new Set(allRooms.map((room) => room.roomType.toLowerCase())),
 	];
 	return (

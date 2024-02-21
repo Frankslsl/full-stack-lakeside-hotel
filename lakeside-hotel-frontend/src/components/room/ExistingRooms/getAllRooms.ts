@@ -5,7 +5,7 @@ import { cusError } from "@/components/utils/cusError";
 const resultSchema = z.array(roomResponseSchema);
 
 const getAllRooms = async () => {
-	const result = await api.get("/all-rooms");
+	const result = await api.get("/rooms/all-rooms");
 	const validatedResult = resultSchema.safeParse(result.data);
 	if (validatedResult.success) {
 		return validatedResult.data;

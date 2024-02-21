@@ -31,7 +31,7 @@ public class Room {
     private Blob photo;
     @Column
     private boolean isBooked = false;
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Builder.Default
     private List<BookedRoom> bookings = new ArrayList<>();
 

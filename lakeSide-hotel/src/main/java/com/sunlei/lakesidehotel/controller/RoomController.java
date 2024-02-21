@@ -42,13 +42,14 @@ public class RoomController {
         return ResponseEntity.ok(allRoomTypes);
     }
 
-    @GetMapping("all-rooms")
+    @GetMapping("/all-rooms")
     public ResponseEntity<List<RoomResponse>> getAllRooms() {
-
-
         List<RoomResponse> allRooms = roomService.getAllRooms();
-
         return ResponseEntity.ok(allRooms);
+    }
 
+    @DeleteMapping("/delete/room/{id}")
+    public ResponseEntity<String> deleteRoomById(@PathVariable String id){
+        return roomService.deleteRoomById(id)? ResponseEntity.ok().body("Room has been deleted") : ResponseEntity.badRequest().body("Room can not be found");
     }
 }

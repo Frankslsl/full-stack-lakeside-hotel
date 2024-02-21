@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  *
  */
-public record RoomResponse(UUID roomId,
+public record RoomResponse(UUID id,
 
                            String roomType, BigDecimal roomPrice, boolean isBooked, String photo,
                            List<BookedRoomResponse> bookings

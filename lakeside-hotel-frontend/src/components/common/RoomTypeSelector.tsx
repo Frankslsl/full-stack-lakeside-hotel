@@ -6,12 +6,13 @@ import {
 	UseFormWatch,
 	useForm,
 } from "react-hook-form";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { z } from "zod";
 import { addNewRoomDataType } from "../room/AddRoom/addNewRoom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldErrors } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useRefreshContext } from "../context/RefreshRoomsListContext";
 
 const customRoomTypeSchema = z.object({
 	customRoomType: z.string().min(1, "room type can not be empty"),
@@ -36,14 +37,17 @@ const toastConfig = {
 };
 
 const RoomTypeSelector = ({ register, watch, errors, setValue }: props) => {
+	const { refresh } = useRefreshContext();
+
 	const [roomTypeState, setRoomTypeState] = useState<string[]>([]);
 	//getting the room types from data base
-	const { data, isLoading, error } = useQuery<string[]>({
+	const { data, isLoading, error, refetch } = useQuery<string[]>({
 		queryKey: "getRoomType",
 		queryFn: getRoomTypes,
 		onSuccess: (data) => setRoomTypeState(data),
 		cacheTime: 0,
 	});
+
 	console.log(roomTypeState);
 	//use a specific useForm to manage customRoomType
 	const {
@@ -56,6 +60,10 @@ const RoomTypeSelector = ({ register, watch, errors, setValue }: props) => {
 	});
 	const customRoomType = customRoomTypeWatch("customRoomType");
 	const roomTypeValue = watch("roomType");
+
+	useEffect(() => {
+		refetch();
+	}, [refresh, refetch]);
 
 	if (isLoading) return <div>Loading</div>;
 	if (error)
@@ -80,7 +88,7 @@ const RoomTypeSelector = ({ register, watch, errors, setValue }: props) => {
 	};
 	return (
 		<>
-			{data && data.length > 0 && (
+			{data && (
 				<div>
 					<select
 						{...register("roomType")}

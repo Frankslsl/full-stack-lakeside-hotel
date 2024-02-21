@@ -4,20 +4,25 @@ import { addNewRoomSchema, addNewRoomDataType, addNewRoom } from "./addNewRoom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RoomTypeSelector from "@/components/common/RoomTypeSelector";
 import { toast } from "react-toastify";
+import { toastConfig } from "@/components/utils/toastConfig";
+import { useEffect } from "react";
+import { useRefreshContext } from "@/components/context/RefreshRoomsListContext";
 
 //main function
 function AddRoom() {
-	const toastConfig = {
-		autoClose: 5000,
-		hideProgressBar: false,
-		closeOnClick: true,
-		pauseOnHover: true,
-		draggable: false,
-		progress: undefined,
-	};
+	const { refresh, changeRefresh } = useRefreshContext();
+	useEffect(() => {}, [refresh]);
 	//define mutation to add new room
-	const { mutate, isSuccess } = useMutation({
+	const { mutate } = useMutation({
 		mutationFn: addNewRoom,
+		onSuccess: () => {
+			toast.success("room has been added", {
+				...toastConfig,
+				position: "top-center",
+			});
+			reset();
+			changeRefresh();
+		},
 	});
 	const {
 		register,
@@ -25,6 +30,7 @@ function AddRoom() {
 		handleSubmit,
 		watch,
 		setValue,
+		reset,
 	} = useForm<addNewRoomDataType>({
 		resolver: zodResolver(addNewRoomSchema),
 	});
@@ -39,13 +45,6 @@ function AddRoom() {
 			photo: data.photo[0],
 		};
 		mutate(param);
-
-		if (isSuccess) {
-			toast.success("room has been added", {
-				...toastConfig,
-				position: "top-center",
-			});
-		}
 	};
 
 	return (

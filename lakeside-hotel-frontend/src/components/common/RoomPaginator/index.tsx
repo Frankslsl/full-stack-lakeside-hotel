@@ -34,7 +34,7 @@ const RoomPaginator = ({ currentPage, totalPage, onPageChange }: Props) => {
 									onPageChange(page);
 								}}
 							>
-								${page}
+								{page}
 							</a>
 						</li>
 					))
