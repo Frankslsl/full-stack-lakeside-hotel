@@ -9,7 +9,6 @@ const roomTypeSchema = z.array(z.string());
 async function getRoomTypes() {
 	try {
 		const result = await api.get("/rooms/room-types");
-		console.log(result.data);
 		const validatedResult = roomTypeSchema.safeParse(result.data);
 		if (validatedResult.success) {
 			return validatedResult.data;

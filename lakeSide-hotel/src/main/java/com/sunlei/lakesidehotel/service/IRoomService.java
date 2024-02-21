@@ -19,4 +19,7 @@ RoomResponse addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPri
     List<RoomResponse> getAllRooms();
 
     Boolean deleteRoomById(String id);
+
+    RoomResponse findRoomById(String id);
+
 }

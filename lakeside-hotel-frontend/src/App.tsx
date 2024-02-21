@@ -1,20 +1,21 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import AddRoom from "./components/room/AddRoom";
-import ExistingRooms from "./components/room/ExistingRooms";
-import { RefreshRoomsListProvider } from "./components/context/RefreshRoomsListContext";
 import { Routes, Route } from "react-router-dom";
 import Home from "./components/home/Home";
+import { Suspense, lazy } from "react";
+
+const ExistingRoom = lazy(() => import("./components/room/RoomsApp"));
+const EditRoom = lazy(() => import("./components/room/EditRoom"));
 
 function App() {
 	return (
 		<>
-			<Routes>
-				<Route path="/" element={<Home />} />
-			</Routes>
-			<RefreshRoomsListProvider>
-				<AddRoom />
-				<ExistingRooms />
-			</RefreshRoomsListProvider>
+			<Suspense fallback={<div>Loading...</div>}>
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/edit-room/:roomId" element={<EditRoom />} />
+					<Route path="/existing-rooms" element={<ExistingRoom />} />
+				</Routes>
+			</Suspense>
 		</>
 	);
 }

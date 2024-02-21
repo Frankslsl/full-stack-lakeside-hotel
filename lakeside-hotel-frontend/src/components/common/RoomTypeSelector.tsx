@@ -48,7 +48,6 @@ const RoomTypeSelector = ({ register, watch, errors, setValue }: props) => {
 		cacheTime: 0,
 	});
 
-	console.log(roomTypeState);
 	//use a specific useForm to manage customRoomType
 	const {
 		register: customRoomTypeRegister,

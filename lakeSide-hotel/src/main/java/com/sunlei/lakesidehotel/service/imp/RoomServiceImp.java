@@ -18,6 +18,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -63,6 +64,14 @@ public class RoomServiceImp implements IRoomService {
     public Boolean deleteRoomById(String id) {
         UUID uuid = UUID.fromString(id);
         return roomRepository.deleteByRoomIdAllIgnoreCase(uuid)>0;
+    }
+
+    @Override
+    public RoomResponse findRoomById(String id) {
+        UUID uuid = UUID.fromString(id);
+        Room room = roomRepository.findById(uuid).orElseThrow(() -> new RuntimeException("Room can not be found"));
+        RoomResponse roomResponse = roomMapper.apply(room);
+        return roomResponse;
     }
 
 

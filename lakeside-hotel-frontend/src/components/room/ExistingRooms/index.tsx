@@ -51,6 +51,7 @@ const ExistingRooms = () => {
 		);
 		changeRefresh();
 	};
+
 	//totalPage function
 	const calculateTotalPage = (
 		filterData: filterData,

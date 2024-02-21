@@ -1,5 +1,6 @@
 package com.sunlei.lakesidehotel.controller;
 
+import com.sunlei.lakesidehotel.repository.RoomRepository;
 import com.sunlei.lakesidehotel.response.RoomResponse;
 import com.sunlei.lakesidehotel.service.IRoomService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 @CrossOrigin
 @Slf4j
 public class RoomController {
+    private final RoomRepository roomRepository;
     private final IRoomService roomService;
 
     @PostMapping("/add/new-room")
@@ -51,5 +53,11 @@ public class RoomController {
     @DeleteMapping("/delete/room/{id}")
     public ResponseEntity<String> deleteRoomById(@PathVariable String id){
         return roomService.deleteRoomById(id)? ResponseEntity.ok().body("Room has been deleted") : ResponseEntity.badRequest().body("Room can not be found");
+    }
+
+    @GetMapping("/getRoomById/{id}")
+    public ResponseEntity<RoomResponse> getRoomById(@PathVariable String id){
+        RoomResponse room= roomService.findRoomById(id);
+        return ResponseEntity.ok().body(room);
     }
 }
