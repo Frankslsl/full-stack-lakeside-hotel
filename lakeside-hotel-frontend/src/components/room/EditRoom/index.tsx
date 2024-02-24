@@ -1,25 +1,44 @@
 import { Link, useNavigate } from "react-router-dom";
 import useGetRoomIdFromPath from "./useGetRoomIdFromPath";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import getRoomById from "./getRoomByIdMutation";
 import { useEffect, useState } from "react";
 import RoomTypeSelector from "@/components/common/RoomTypeSelector";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { addNewRoomDataType, addNewRoomSchema } from "../AddRoom/addNewRoom";
+import {
+	editRoomDataType,
+	editRoomMutation,
+	editRoomSchema,
+} from "./editRoomMutation";
+import { toast } from "react-toastify";
+import { toastConfig } from "@/components/utils/toastConfig";
 
 const EditRoom = () => {
 	const [imagePreview, setImagePreview] = useState("");
 	//get id from url
-	const roomId = useGetRoomIdFromPath() as string;
+
+	const { roomId, viewMethod } = useGetRoomIdFromPath()!;
+
 	const navigate = useNavigate();
-	//define the mutation
+	//define the query to get room
 
 	const { data, isError, isLoading } = useQuery({
 		queryKey: "getRoom",
 		queryFn: () => getRoomById(roomId),
 		cacheTime: 0,
 		staleTime: 0,
+	});
+
+	//define the edit mutation
+	const { mutate } = useMutation(editRoomMutation, {
+		onSuccess: () => {
+			toast.success("room has been edit", {
+				...toastConfig,
+				position: "top-center",
+			});
+			navigate("/existing-rooms", { replace: true });
+		},
 	});
 
 	//define the form
@@ -29,8 +48,8 @@ const EditRoom = () => {
 		handleSubmit,
 		watch,
 		setValue,
-	} = useForm<addNewRoomDataType>({
-		resolver: zodResolver(addNewRoomSchema),
+	} = useForm<editRoomDataType>({
+		resolver: zodResolver(editRoomSchema),
 	});
 
 	//define the image url
@@ -39,7 +58,10 @@ const EditRoom = () => {
 			watch("photo") && watch("photo")[0] ? watch("photo")[0] : null;
 		const imagePreviewUrl =
 			photoFile instanceof File ? URL.createObjectURL(photoFile) : "";
-		setImagePreview(imagePreviewUrl);
+		if (imagePreviewUrl != "") {
+			setImagePreview(imagePreviewUrl);
+		}
+		return () => URL.revokeObjectURL(imagePreviewUrl);
 	}, [watch("photo")]);
 
 	//useEffect, add the value to the form
@@ -50,16 +72,31 @@ const EditRoom = () => {
 		if (!isLoading && data) {
 			setValue("roomType", data.roomType);
 			setValue("roomPrice", data.roomPrice);
+			setValue("roomId", roomId);
 			setImagePreview(`data:image/jpeg;base64,${data.photo}`);
 		}
-	}, [data, isError, isLoading, navigate, setValue, imagePreview]);
+	}, [data, isError, isLoading, navigate, setValue, roomId]);
+
+	//handle click edit
+	const handleEditClick = (data: editRoomDataType) => {
+		const params = {
+			...data,
+			photo: data.photo[0],
+			roomId,
+		};
+		mutate(params);
+	};
+
 	return (
 		<>
 			<section className="container mt-5 mb-5">
 				<div className="row justify-content-center">
 					<div className="col-md-8 col-lg-6">
-						<h2 className="mt-5 mb-2">Editing a room</h2>
-						<form onSubmit={handleSubmit(() => console.log("click"))}>
+						<h2 className="mt-5 mb-2">
+							{viewMethod ? "Viewing a room" : "Editing a room"}
+						</h2>
+						<form onSubmit={handleSubmit(handleEditClick)}>
+							<input {...register("roomId")} className="invisible"></input>
 							<div className="mb-3">
 								<label className="form-label" htmlFor="roomType">
 									Room Type
@@ -70,6 +107,7 @@ const EditRoom = () => {
 										watch={watch}
 										errors={errors}
 										setValue={setValue}
+										viewMethod={viewMethod}
 									/>
 								</div>
 							</div>
@@ -85,22 +123,28 @@ const EditRoom = () => {
 									type="number"
 									defaultValue={0}
 									step={0.01}
+									readOnly={viewMethod}
 								/>
 								{errors.roomPrice && (
 									<p className="mt-1 text-danger">{errors.roomPrice.message}</p>
 								)}
 							</div>
 							<div className="mb-3">
-								<label className="form-label" htmlFor="photo">
-									Room Photo
-								</label>
-								<input
-									{...register("photo")}
-									className="form-control"
-									required
-									id="photo"
-									type="file"
-								/>
+								{viewMethod ? (
+									""
+								) : (
+									<>
+										<label className="form-label" htmlFor="photo">
+											Room Photo
+										</label>
+										<input
+											{...register("photo")}
+											className="form-control"
+											id="photo"
+											type="file"
+										/>
+									</>
+								)}
 								{imagePreview && (
 									<img
 										src={imagePreview}
@@ -120,9 +164,20 @@ const EditRoom = () => {
 								)}
 							</div>
 							<div className="d-block d-md-flex mt-2">
-								<button type="submit" className="btn btn-outline-danger ms-5">
-									Edit Room
-								</button>
+								{viewMethod ? (
+									<Link to={`/edit-room/${roomId}/false`}>
+										<button
+											type="submit"
+											className="btn btn-outline-warning ms-5"
+										>
+											Edit Room
+										</button>
+									</Link>
+								) : (
+									<button type="submit" className="btn btn-outline-danger ms-5">
+										Edit Room
+									</button>
+								)}
 								<Link to={"/existing-rooms"}>
 									<button
 										type="submit"

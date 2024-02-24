@@ -12,7 +12,7 @@ import java.util.List;
  *
  */
 public interface IRoomService{
-RoomResponse addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPrice) throws IOException, SQLException;
+RoomResponse addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPrice) throws IOException;
 
     List<String> getAllRoomTypes();
 
@@ -22,4 +22,5 @@ RoomResponse addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPri
 
     RoomResponse findRoomById(String id);
 
+    RoomResponse update(MultipartFile photo, String roomType, BigDecimal roomPrice, String id) throws IOException;
 }

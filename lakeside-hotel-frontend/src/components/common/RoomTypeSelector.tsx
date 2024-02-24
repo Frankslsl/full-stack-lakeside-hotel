@@ -9,6 +9,7 @@ import {
 import { MouseEvent, useEffect, useState } from "react";
 import { z } from "zod";
 import { addNewRoomDataType } from "../room/AddRoom/addNewRoom";
+import { editRoomDataType } from "../room/EditRoom/editRoomMutation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldErrors } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -21,10 +22,11 @@ const customRoomTypeSchema = z.object({
 type customRoomTypeType = z.infer<typeof customRoomTypeSchema>;
 
 type props = {
-	register: UseFormRegister<addNewRoomDataType>;
-	watch: UseFormWatch<addNewRoomDataType>;
-	errors: FieldErrors<addNewRoomDataType>;
-	setValue: UseFormSetValue<addNewRoomDataType>;
+	register: UseFormRegister<addNewRoomDataType | editRoomDataType>;
+	watch: UseFormWatch<addNewRoomDataType | editRoomDataType>;
+	errors: FieldErrors<addNewRoomDataType | editRoomDataType>;
+	setValue: UseFormSetValue<addNewRoomDataType | editRoomDataType>;
+	viewMethod: boolean;
 };
 
 const toastConfig = {
@@ -36,7 +38,13 @@ const toastConfig = {
 	progress: undefined,
 };
 
-const RoomTypeSelector = ({ register, watch, errors, setValue }: props) => {
+const RoomTypeSelector = ({
+	register,
+	watch,
+	errors,
+	setValue,
+	viewMethod,
+}: props) => {
 	const { refresh } = useRefreshContext();
 
 	const [roomTypeState, setRoomTypeState] = useState<string[]>([]);
@@ -93,6 +101,7 @@ const RoomTypeSelector = ({ register, watch, errors, setValue }: props) => {
 						{...register("roomType")}
 						id="roomType"
 						value={watch("roomType")}
+						disabled={viewMethod}
 					>
 						<option value={""}>Select a room type</option>
 						<option value={"Add New"}>Add new</option>

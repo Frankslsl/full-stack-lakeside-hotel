@@ -5,16 +5,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import RoomTypeSelector from "@/components/common/RoomTypeSelector";
 import { toast } from "react-toastify";
 import { toastConfig } from "@/components/utils/toastConfig";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRefreshContext } from "@/components/context/RefreshRoomsListContext";
+import { Link } from "react-router-dom";
 
 //main function
 function AddRoom() {
-	const { refresh, changeRefresh } = useRefreshContext();
-	useEffect(() => {}, [refresh]);
+	const { changeRefresh } = useRefreshContext();
+	// useEffect(() => {}, [refresh]);
+	const [imagePreview, setImagePreview] = useState<string>("");
 	//define mutation to add new room
-	const { mutate } = useMutation({
-		mutationFn: addNewRoom,
+	const { mutate } = useMutation(addNewRoom, {
 		onSuccess: () => {
 			toast.success("room has been added", {
 				...toastConfig,
@@ -35,9 +36,13 @@ function AddRoom() {
 		resolver: zodResolver(addNewRoomSchema),
 	});
 
-	const photoFile =
-		watch("photo") && watch("photo")[0] ? watch("photo")[0] : null;
-	const imagePreviewUrl = photoFile ? URL.createObjectURL(photoFile) : "";
+	useEffect(() => {
+		const photoFile =
+			watch("photo") && watch("photo")[0] ? watch("photo")[0] : null;
+		const imagePreviewUrl = photoFile ? URL.createObjectURL(photoFile) : "";
+		setImagePreview(imagePreviewUrl);
+		return () => URL.revokeObjectURL(imagePreviewUrl);
+	}, [watch("photo")]);
 
 	const onSubmit = (data: addNewRoomDataType) => {
 		const param = {
@@ -64,6 +69,7 @@ function AddRoom() {
 										watch={watch}
 										errors={errors}
 										setValue={setValue}
+										viewMethod={false}
 									/>
 								</div>
 							</div>
@@ -95,9 +101,9 @@ function AddRoom() {
 									id="photo"
 									type="file"
 								/>
-								{imagePreviewUrl && (
+								{imagePreview && (
 									<img
-										src={imagePreviewUrl}
+										src={imagePreview}
 										alt="Preview Room Photo"
 										style={{
 											maxWidth: "400px",
@@ -117,6 +123,14 @@ function AddRoom() {
 								<button type="submit" className="btn btn-outline-primary ml-5">
 									Save Room
 								</button>
+								<Link to={"/existing-rooms"}>
+									<button
+										type="submit"
+										className="btn btn-outline-primary ml-5"
+									>
+										Existing Rooms
+									</button>
+								</Link>
 							</div>
 						</form>
 					</div>

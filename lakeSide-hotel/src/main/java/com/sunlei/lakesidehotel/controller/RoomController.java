@@ -1,6 +1,5 @@
 package com.sunlei.lakesidehotel.controller;
 
-import com.sunlei.lakesidehotel.repository.RoomRepository;
 import com.sunlei.lakesidehotel.response.RoomResponse;
 import com.sunlei.lakesidehotel.service.IRoomService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import java.util.List;
 @CrossOrigin
 @Slf4j
 public class RoomController {
-    private final RoomRepository roomRepository;
     private final IRoomService roomService;
 
     @PostMapping("/add/new-room")
@@ -31,7 +29,7 @@ public class RoomController {
             @RequestParam("photo") MultipartFile photo,
             @RequestParam("roomType") String roomType,
             @RequestParam("roomPrice") BigDecimal roomPrice
-    ) throws SQLException, IOException {
+    ) throws  IOException {
         RoomResponse savedRoomResponse = roomService.addNewRoom(photo, roomType, roomPrice);
         return ResponseEntity.ok(savedRoomResponse);
 
@@ -51,13 +49,25 @@ public class RoomController {
     }
 
     @DeleteMapping("/delete/room/{id}")
-    public ResponseEntity<String> deleteRoomById(@PathVariable String id){
-        return roomService.deleteRoomById(id)? ResponseEntity.ok().body("Room has been deleted") : ResponseEntity.badRequest().body("Room can not be found");
+    public ResponseEntity<String> deleteRoomById(@PathVariable String id) {
+        return roomService.deleteRoomById(id) ? ResponseEntity.ok().body("Room has been deleted") : ResponseEntity.badRequest().body("Room can not be found");
     }
 
     @GetMapping("/getRoomById/{id}")
-    public ResponseEntity<RoomResponse> getRoomById(@PathVariable String id){
-        RoomResponse room= roomService.findRoomById(id);
+    public ResponseEntity<RoomResponse> getRoomById(@PathVariable String id) {
+        RoomResponse room = roomService.findRoomById(id);
         return ResponseEntity.ok().body(room);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<RoomResponse> updateRoom(
+            @RequestParam(value = "photo", required = false) MultipartFile photo,
+            @RequestParam("roomType") String roomType,
+            @RequestParam("roomPrice") BigDecimal roomPrice,
+            @PathVariable String id
+    ) throws  IOException {
+        RoomResponse savedRoomResponse = roomService.update(photo, roomType, roomPrice, id);
+        return ResponseEntity.ok(savedRoomResponse);
+
     }
 }

@@ -1,5 +1,7 @@
 package com.sunlei.lakesidehotel.service.imp;
 
+import com.sunlei.lakesidehotel.exception.InternalServerException;
+import com.sunlei.lakesidehotel.exception.ResourceNotFoundException;
 import com.sunlei.lakesidehotel.mapper.RoomMapper;
 import com.sunlei.lakesidehotel.model.Room;
 import com.sunlei.lakesidehotel.repository.RoomRepository;
@@ -33,15 +35,20 @@ public class RoomServiceImp implements IRoomService {
     private final RoomMapper roomMapper;
 
     @Override
-    public RoomResponse addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPrice) throws IOException, SQLException {
+    public RoomResponse addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPrice) throws IOException {
         Room room = Room.builder()
                 .roomType(roomType)
                 .roomPrice(roomPrice)
                 .build();
         if (!photo.isEmpty()) {
             byte[] photoBytes = photo.getBytes();
+            try{
+
             Blob photoBlob = new SerialBlob(photoBytes);
             room.setPhoto(photoBlob);
+            }catch (SQLException e){
+                throw new InternalServerException("SQL Error when adding the room photo", e);
+            }
         }
         Room save = roomRepository.save(room);
         log.info("room has been added, room id is {}", save.getRoomId());
@@ -56,7 +63,7 @@ public class RoomServiceImp implements IRoomService {
     @Override
     public List<RoomResponse> getAllRooms() {
         List<Room> allRooms = roomRepository.findAll();
-        return allRooms.stream().map(roomMapper::apply).toList();
+        return allRooms.stream().map(roomMapper).toList();
     }
 
     @Override
@@ -69,9 +76,28 @@ public class RoomServiceImp implements IRoomService {
     @Override
     public RoomResponse findRoomById(String id) {
         UUID uuid = UUID.fromString(id);
-        Room room = roomRepository.findById(uuid).orElseThrow(() -> new RuntimeException("Room can not be found"));
-        RoomResponse roomResponse = roomMapper.apply(room);
-        return roomResponse;
+        Room room = roomRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("Room can not be found"));
+        return roomMapper.apply(room);
+    }
+
+    @Override
+    public RoomResponse update(MultipartFile photo, String roomType, BigDecimal roomPrice, String id) throws IOException {
+        UUID uuid = UUID.fromString(id);
+        Room room = roomRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("Room can not be found"));
+        room.setRoomType(roomType);
+        room.setRoomPrice(roomPrice);
+        if (photo!=null && !photo.isEmpty()){
+            byte[] photoBytes = photo.getBytes();
+            try{
+
+            Blob photoBlob = new SerialBlob(photoBytes);
+            room.setPhoto(photoBlob);
+            }catch (SQLException e){
+                throw new InternalServerException("SQL Error when updating the room photo", e);
+            }
+        }
+        Room update = roomRepository.save(room);
+        return roomMapper.apply(update);
     }
 
 

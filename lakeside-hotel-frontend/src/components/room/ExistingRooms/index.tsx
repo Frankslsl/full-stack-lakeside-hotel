@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { toast } from "react-toastify";
-import { Col } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { z } from "zod";
 import { roomResponseSchema } from "@/components/utils/generalType";
 import getAllRooms from "./getAllRooms";
@@ -10,7 +10,7 @@ import RoomPaginator from "@/components/common/RoomPaginator";
 import deleteRoomFun from "./deleteRoomFun";
 import { toastConfig } from "@/components/utils/toastConfig";
 import { useRefreshContext } from "@/components/context/RefreshRoomsListContext";
-import { FaEdit, FaEye, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaEye, FaPlus, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 type filterData = z.infer<typeof roomResponseSchema>[];
@@ -84,15 +84,33 @@ const ExistingRooms = () => {
 	return (
 		<>
 			{!allRooms ? (
-				<div>There is no room</div>
+				<>
+					<Col>
+						<h2>There is no room</h2>
+					</Col>
+					<Col>
+						<Link to={"/add-room"}>
+							<FaPlus />
+							Add Room
+						</Link>
+					</Col>
+				</>
 			) : (
 				<section className="mt-5 mb-5 container">
 					<div className="d-flex justify-content-center mb-3 mt-5">
 						<h2>Existing rooms</h2>
 					</div>
-					<Col md={6} className="mb-3 mb-md-0">
-						<RoomFilter allRooms={allRooms} setFilteredData={setFilterData} />
-					</Col>
+					<Row className="align-items-baseline d-flex justify-content-between">
+						<Col md={6} className="mb-3 mb-md-0">
+							<RoomFilter allRooms={allRooms} setFilteredData={setFilterData} />
+						</Col>
+						<Col md={6} className="d-flex justify-content-end">
+							<Link to={"/add-room"}>
+								<FaPlus />
+								Add Room
+							</Link>
+						</Col>
+					</Row>
 					<table className="table table-bordered table-hover">
 						<thead>
 							<tr className="text-md-center">
@@ -109,13 +127,13 @@ const ExistingRooms = () => {
 									<td>{room.roomType}</td>
 									<td>{room.roomPrice}</td>
 									<td className="d-flex justify-content-center gap-2">
-										<Link to={`/edit-room/${room.id}`}>
+										<Link to={`/edit-room/${room.id}/true`}>
 											<button className="btn btn-info btn-sm">
 												<FaEye />
 											</button>
 										</Link>
 
-										<Link to={`/edit-room/${room.id}`}>
+										<Link to={`/edit-room/${room.id}/false`}>
 											<button className="btn btn-warning btn-sm">
 												<FaEdit />
 											</button>
