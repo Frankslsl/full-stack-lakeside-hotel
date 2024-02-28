@@ -1,9 +1,19 @@
-import React from "react";
+import HotelService from "@/components/common/HotelService";
+import Parallax from "@/components/common/Parallax";
+import MainHeader from "@/components/layout/MainHeader";
+import { Container } from "react-bootstrap";
 
-type Props = {};
-
-const Home = (props: Props) => {
-	return <div>Home</div>;
+const Home = () => {
+	return (
+		<section>
+			<MainHeader />
+			<Container>
+				<Parallax />
+				<HotelService />
+				<Parallax />
+			</Container>
+		</section>
+	);
 };
 
 export default Home;

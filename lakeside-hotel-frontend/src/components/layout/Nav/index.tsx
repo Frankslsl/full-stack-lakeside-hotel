@@ -3,7 +3,7 @@ import Nav from "react-bootstrap/Nav";
 
 const NavbarCus = () => {
 	return (
-		<Navbar className="bg-body-tertiary navbar-expand-lg">
+		<Navbar className="bg-body-tertiary navbar-expand-lg shadow fixed-top">
 			<Container>
 				<Navbar.Brand href="/home">lakeSide Hotel</Navbar.Brand>
 				<Navbar.Toggle aria-controls="navbarScroll" />

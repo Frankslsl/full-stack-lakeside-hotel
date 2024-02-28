@@ -55,7 +55,7 @@ const Room = () => {
 		return <div>Something went wrong when getting all rooms from database</div>;
 	}
 	return (
-		<section className="bg-light my-5 shadow">
+		<section className="bg-light" style={{ marginTop: "80px" }}>
 			<Container>
 				{!allRooms ? (
 					<>
