@@ -1,9 +1,7 @@
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-type Props = {};
-
-const Admin = (props: Props) => {
+const Admin = () => {
 	return (
 		<section className="bg-light" style={{ marginTop: "80px" }}>
 			<Container>
