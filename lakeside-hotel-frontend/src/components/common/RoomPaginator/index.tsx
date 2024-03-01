@@ -1,4 +1,5 @@
 import { z } from "zod";
+import AnchorLink from "react-anchor-link-smooth-scroll";
 
 const pageSchema = z.object({
 	currentPage: z.number().positive(),
@@ -27,15 +28,17 @@ const RoomPaginator = ({ currentPage, totalPage, onPageChange }: Props) => {
 							key={page}
 							className={`page-item ${currentPage === page ? "active" : ""}`}
 						>
-							<a
+							<AnchorLink
+								href="#list-top"
 								className="page-link"
+								style={{ cursor: "pointer" }}
 								onClick={(e) => {
 									e.preventDefault();
 									onPageChange(page);
 								}}
 							>
 								{page}
-							</a>
+							</AnchorLink>
 						</li>
 					))
 				)}

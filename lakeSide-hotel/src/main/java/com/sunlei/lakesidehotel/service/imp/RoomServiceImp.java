@@ -81,6 +81,13 @@ public class RoomServiceImp implements IRoomService {
     }
 
     @Override
+    public Room findRoomByIdReturnRoom(String id) {
+        UUID uuid = UUID.fromString(id);
+        return roomRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("Room can not be found"));
+
+    }
+
+    @Override
     public RoomResponse update(MultipartFile photo, String roomType, BigDecimal roomPrice, String id) throws IOException {
         UUID uuid = UUID.fromString(id);
         Room room = roomRepository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("Room can not be found"));

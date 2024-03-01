@@ -1,6 +1,7 @@
 package com.sunlei.lakesidehotel.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -39,7 +40,8 @@ public class BookedRoom {
     @NotNull
     private int numOfKids = 0;
 
-    @Column
+    @NotEmpty
+    @Column(unique = true)
     @NotNull
     private String bookingConfirmationCode;
     @ManyToOne()

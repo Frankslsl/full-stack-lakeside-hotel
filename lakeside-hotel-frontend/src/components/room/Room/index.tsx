@@ -2,7 +2,7 @@ import RoomFilter from "@/components/common/RoomFilter";
 import RoomPaginator from "@/components/common/RoomPaginator";
 import { roomResponseSchema } from "@/components/utils/generalType";
 import { getAllRoomsMutation } from "@/components/utils/getAllRoomsMutation";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import { useQuery } from "react-query";
@@ -89,6 +89,7 @@ const Room = () => {
 							<Col
 								md={6}
 								className="d-flex align-items-center justify-content-start"
+								id="list-top"
 							>
 								<RoomPaginator
 									currentPage={currentPage}
@@ -103,7 +104,9 @@ const Room = () => {
 						</Row>
 						<Row>
 							{currentRooms.map((room) => (
-								<RoomCard room={room} />
+								<Fragment key={room.id}>
+									<RoomCard room={room} />
+								</Fragment>
 							))}
 						</Row>
 						<Row>

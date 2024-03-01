@@ -1,5 +1,6 @@
 package com.sunlei.lakesidehotel.service;
 
+import com.sunlei.lakesidehotel.model.Room;
 import com.sunlei.lakesidehotel.response.RoomResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +22,7 @@ RoomResponse addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPri
     Boolean deleteRoomById(String id);
 
     RoomResponse findRoomById(String id);
+    Room findRoomByIdReturnRoom(String id);
 
     RoomResponse update(MultipartFile photo, String roomType, BigDecimal roomPrice, String id) throws IOException;
 }
